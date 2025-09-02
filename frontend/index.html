@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Budget Tracker Dashboard</title>
+    <link href="./css/styles.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body class="h-screen font-sans bg-gray-100">
+    <div class="flex gap-[2%] flex-wrap content-start h-full p-4">
+      <div
+        class="w-1/4 h-full p-4 text-white shadow-lg rounded-3xl bg-primary-blue"
+      >
+        <div class="mb-8">
+          <h2 class="mb-4 text-xl font-bold">Budget Tracker</h2>
+          <div
+            class="flex items-center justify-center w-12 h-12 mb-2 bg-white rounded-full"
+          >
+            <span class="text-lg font-bold text-primary-blue">₱</span>
+          </div>
+        </div>
+
+        <nav class="space-y-2">
+          <button
+            onclick="showPage('dashboard')"
+            class="w-full px-4 py-3 text-left transition-colors bg-blue-600 rounded-3xl nav-item hover:bg-blue-600"
+            id="nav-dashboard"
+          >
+            Dashboard
+          </button>
+          <button
+            onclick="showPage('profile')"
+            class="w-full px-4 py-3 text-left transition-colors rounded-3xl nav-item hover:bg-blue-600"
+            id="nav-profile"
+          >
+            Profile
+          </button>
+          <button
+            onclick="showPage('expenses')"
+            class="w-full px-4 py-3 text-left transition-colors rounded-3xl nav-item hover:bg-blue-600"
+            id="nav-expenses"
+          >
+            Expenses
+          </button>
+          <button
+            onclick="showPage('bills')"
+            class="w-full px-4 py-3 text-left transition-colors rounded-3xl nav-item hover:bg-blue-600"
+            id="nav-bills"
+          >
+            Bills
+          </button>
+          <button
+            onclick="showPage('calendar')"
+            class="w-full px-4 py-3 text-left transition-colors rounded-3xl nav-item hover:bg-blue-600"
+            id="nav-calendar"
+          >
+            Calendar
+          </button>
+          <button
+            onclick="showPage('charts')"
+            class="w-full px-4 py-3 text-left transition-colors rounded-3xl nav-item hover:bg-blue-600"
+            id="nav-charts"
+          >
+            Charts
+          </button>
+          <button
+            onclick="showPage('savings')"
+            class="w-full px-4 py-3 text-left transition-colors rounded-3xl nav-item hover:bg-blue-600"
+            id="nav-savings"
+          >
+            Savings
+          </button>
+          <button
+            onclick="showPage('settings')"
+            class="w-full px-4 py-3 text-left transition-colors rounded-3xl nav-item hover:bg-blue-600"
+            id="nav-settings"
+          >
+            Settings
+          </button>
+        </nav>
+      </div>
+
+      <div class="h-full overflow-y-auto shadow-none bg-none rounded-3xl grow">
+        <div
+          id="page-dashboard"
+          class="p-6 bg-white page-content dark:bg-gray-900"
+        >
+          <h1 class="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Hello,
+          </h1>
+
+          <div class="space-y-4">
+            <div class="grid items-stretch grid-cols-2 gap-4">
+              <div
+                class="flex flex-col justify-between h-auto p-6 text-white shadow-lg rounded-3xl bg-primary-red"
+              >
+                <div>
+                  <div class="flex items-start justify-between mb-4">
+                    <h3 class="text-lg font-semibold">Remaining Budget</h3>
+                    <div class="relative">
+                      <button
+                        id="quick-expense-button"
+                        onclick="toggleQuickExpense()"
+                        class="p-2 text-white rounded-full hover:bg-red-600"
+                      >
+                        ⋯
+                      </button>
+                      <div
+                        id="quick-expense-menu"
+                        class="absolute right-0 z-10 hidden w-48 p-3 mt-2 text-gray-800 bg-white shadow-lg rounded-3xl dark:bg-gray-800 dark:text-gray-100"
+                      >
+                        <input
+                          type="number"
+                          id="quick-amount"
+                          placeholder="Amount"
+                          class="w-full p-2 mb-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                        />
+                        <input
+                          type="text"
+                          id="quick-description"
+                          placeholder="Description"
+                          class="w-full p-2 mb-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                        />
+                        <button
+                          onclick="addQuickExpense()"
+                          class="w-full p-2 text-white rounded bg-primary-red hover:bg-red-600"
+                        >
+                          Add Expense
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-3xl font-bold" id="remaining-budget">
+                    ₱15,500.00
+                  </div>
+                </div>
+                <p class="mt-2 text-sm text-red-200"></p>
+              </div>
+
+              <div
+                class="flex flex-col h-auto p-6 text-gray-800 shadow-lg rounded-3xl bg-primary-yellow dark:bg-yellow-900 dark:text-gray-100"
+              >
+                <h3 class="mb-4 text-lg font-semibold">Upcoming Bills</h3>
+                <div id="upcoming-bills" class="space-y-3 overflow-y-auto">
+                  <div
+                    class="flex items-center justify-between p-3 rounded bg-yellow-50 dark:bg-yellow-800"
+                  >
+                    <div>
+                      <p class="font-medium">Electricity Bill</p>
+                      <p class="text-sm text-gray-600 dark:text-gray-300">
+                        Due: Dec 15
+                      </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="font-bold">₱2,500.00</span>
+                      <input
+                        type="checkbox"
+                        class="bill-checkbox"
+                        data-amount="2500"
+                        onchange="markBillPaid(this)"
+                      />
+                    </div>
+                  </div>
+
+                  <div
+                    class="flex items-center justify-between p-3 rounded bg-yellow-50 dark:bg-yellow-800"
+                  >
+                    <div>
+                      <p class="font-medium">Water Bill</p>
+                      <p class="text-sm text-gray-600 dark:text-gray-300">
+                        Due: Dec 20
+                      </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="font-bold">₱800.00</span>
+                      <input
+                        type="checkbox"
+                        class="bill-checkbox"
+                        data-amount="800"
+                        onchange="markBillPaid(this)"
+                      />
+                    </div>
+                  </div>
+
+                  <div
+                    class="flex items-center justify-between p-3 rounded bg-yellow-50 dark:bg-yellow-800"
+                  >
+                    <div>
+                      <p class="font-medium">Internet Bill</p>
+                      <p class="text-sm text-gray-600 dark:text-gray-300">
+                        Due: Dec 25
+                      </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="font-bold">₱1,500.00</span>
+                      <input
+                        type="checkbox"
+                        class="bill-checkbox"
+                        data-amount="1500"
+                        onchange="markBillPaid(this)"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="flex flex-col w-full h-auto p-6 shadow-lg rounded-3xl bg-blue-50 dark:bg-gray-800"
+            >
+              <h3
+                class="mb-4 text-lg font-semibold text-gray-800 dark:text-gray-100"
+              >
+                Monthly Savings Trend
+              </h3>
+              <div class="flex-1">
+                <canvas id="savingsChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="page-profile"
+          class="hidden p-6 bg-white rounded-3xl page-content dark:bg-gray-900"
+        >
+          <h1 class="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Profile & Income
+          </h1>
+
+          <div class="max-w-2xl">
+            <div class="p-6 mb-6 rounded-3xl bg-blue-50 dark:bg-gray-800">
+              <h3
+                class="mb-4 text-lg font-semibold text-gray-800 dark:text-gray-100"
+              >
+                Add Income/Allowance
+              </h3>
+              <div class="space-y-4">
+                <input
+                  type="text"
+                  id="income-description"
+                  placeholder="Description"
+                  class="w-full p-3 border rounded-3xl dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                />
+                <input
+                  type="number"
+                  id="income-amount"
+                  placeholder="Amount (₱)"
+                  class="w-full p-3 border rounded-3xl dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                />
+                <select
+                  id="income-frequency"
+                  class="w-full p-3 border rounded-3xl dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                >
+                  <option value="">Select Frequency</option>
+                  <option>Weekly</option>
+                  <option>Monthly</option>
+                </select>
+                <button
+                  onclick="addIncome()"
+                  class="px-6 py-3 text-white rounded-3xl bg-primary-blue hover:bg-blue-600"
+                >
+                  Add Income
+                </button>
+              </div>
+            </div>
+
+            <div
+              class="p-6 bg-white border rounded-3xl dark:bg-gray-800 dark:border-gray-700"
+            >
+              <h3
+                class="mb-4 text-lg font-semibold text-gray-800 dark:text-gray-100"
+              >
+                Current Income Sources
+              </h3>
+              <div
+                id="income-sources"
+                class="pr-2 space-y-3 overflow-y-auto max-h-64"
+              >
+                <p class="font-normal text-red-500">No income source yet</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="page-expenses"
+          class="hidden p-6 bg-white page-content dark:bg-gray-900"
+        >
+          <h1 class="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Expenses
+          </h1>
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div class="p-6 text-white rounded-3xl bg-primary-red">
+              <h3 class="mb-2 font-semibold">Food</h3>
+              <p class="text-2xl font-bold">₱8,500.00</p>
+            </div>
+            <div
+              class="p-6 text-gray-800 rounded-3xl bg-primary-yellow dark:bg-yellow-900 dark:text-gray-100"
+            >
+              <h3 class="mb-2 font-semibold">Transport/Gas</h3>
+              <p class="text-2xl font-bold">₱3,200.00</p>
+            </div>
+            <div class="p-6 text-white rounded-3xl bg-primary-blue">
+              <h3 class="mb-2 font-semibold">Other Expenses</h3>
+              <p class="text-2xl font-bold">₱2,100.00</p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="page-bills"
+          class="hidden p-6 bg-white page-content dark:bg-gray-900"
+        >
+          <h1 class="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Bills Management
+          </h1>
+          <p class="text-gray-600 dark:text-gray-300">
+            Add and manage your recurring bills here. Bills will appear on the
+            calendar.
+          </p>
+        </div>
+
+        <div
+          id="page-calendar"
+          class="hidden p-6 bg-white page-content dark:bg-gray-900"
+        >
+          <h1 class="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Calendar
+          </h1>
+          <p class="text-gray-600 dark:text-gray-300">
+            Current month view with light green for past/current week and dark
+            green for future dates.
+          </p>
+        </div>
+
+        <div
+          id="page-charts"
+          class="hidden p-6 bg-white page-content dark:bg-gray-900"
+        >
+          <h1 class="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Charts & Analytics
+          </h1>
+          <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <div class="p-6 rounded-3xl bg-red-50 dark:bg-red-900">
+              <h3 class="mb-4 font-semibold text-gray-800 dark:text-gray-100">
+                Income vs Expenses/Bills
+              </h3>
+              <div
+                class="flex items-center justify-center h-48 bg-white rounded dark:bg-gray-800"
+              >
+                Chart Placeholder
+              </div>
+            </div>
+            <div class="p-6 rounded-3xl bg-blue-50 dark:bg-blue-900">
+              <h3 class="mb-4 font-semibold text-gray-800 dark:text-gray-100">
+                Budget Performance
+              </h3>
+              <div
+                class="flex items-center justify-center h-48 bg-white rounded dark:bg-gray-800"
+              >
+                Chart Placeholder
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="page-savings"
+          class="hidden p-6 bg-white page-content dark:bg-gray-900"
+        >
+          <h1 class="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Savings Analysis
+          </h1>
+          <p class="text-gray-600 dark:text-gray-300">
+            Focus and analyze each month's savings performance.
+          </p>
+        </div>
+
+        <div
+          id="page-settings"
+          class="hidden p-6 bg-white page-content dark:bg-gray-900"
+        >
+          <h1 class="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Settings
+          </h1>
+          <div class="max-w-md space-y-4">
+            <div
+              class="flex items-center justify-between p-4 rounded-3xl bg-gray-50 dark:bg-gray-800"
+            >
+              <span class="text-gray-800 dark:text-gray-100">Dark Mode</span>
+              <input type="checkbox" class="toggle" />
+            </div>
+            <button
+              class="w-full p-3 text-gray-800 rounded-3xl bg-primary-yellow hover:bg-yellow-500 dark:text-gray-100 dark:bg-yellow-900 dark:hover:bg-yellow-800"
+            >
+              Change Password
+            </button>
+            <button
+              class="w-full p-3 text-white rounded-3xl bg-primary-blue hover:bg-blue-600"
+            >
+              Change Email
+            </button>
+            <button
+              class="w-full p-3 text-white rounded-3xl bg-primary-red hover:bg-red-600"
+            >
+              Log Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="./js/main.js"></script>
+    <script src="./js/api.js"></script>
+  </body>
+</html>
