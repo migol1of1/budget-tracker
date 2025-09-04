@@ -4,8 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Budget Tracker Dashboard</title>
-    <link href="./css/styles.css" rel="stylesheet" />
+    <link href="./css/output.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      .grid-cols-7 {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+      }
+      .h-24 {
+        height: 5rem;
+      }
+      .border-r {
+        border-right-width: 1px;
+      }
+    </style>
   </head>
   <body class="h-screen font-sans bg-gray-100">
     <div class="flex gap-[2%] flex-wrap content-start h-full p-4">
@@ -65,13 +76,6 @@
             Charts
           </button>
           <button
-            onclick="showPage('savings')"
-            class="w-full px-4 py-3 text-left transition-colors rounded-3xl nav-item hover:bg-blue-600"
-            id="nav-savings"
-          >
-            Savings
-          </button>
-          <button
             onclick="showPage('settings')"
             class="w-full px-4 py-3 text-left transition-colors rounded-3xl nav-item hover:bg-blue-600"
             id="nav-settings"
@@ -84,10 +88,10 @@
       <div class="h-full overflow-y-auto shadow-none bg-none rounded-3xl grow">
         <div
           id="page-dashboard"
-          class="p-6 bg-white page-content dark:bg-gray-900"
+          class="h-full p-6 bg-white page-content dark:bg-gray-900"
         >
           <h1 class="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
-            Hello,
+            Hello, Miguel!
           </h1>
 
           <div class="space-y-4">
@@ -149,7 +153,7 @@
                     <div>
                       <p class="font-medium">Electricity Bill</p>
                       <p class="text-sm text-gray-600 dark:text-gray-300">
-                        Due: Dec 15
+                        Due: Sept 15
                       </p>
                     </div>
                     <div class="flex items-center gap-2">
@@ -169,7 +173,7 @@
                     <div>
                       <p class="font-medium">Water Bill</p>
                       <p class="text-sm text-gray-600 dark:text-gray-300">
-                        Due: Dec 20
+                        Due: Sept 20
                       </p>
                     </div>
                     <div class="flex items-center gap-2">
@@ -189,7 +193,7 @@
                     <div>
                       <p class="font-medium">Internet Bill</p>
                       <p class="text-sm text-gray-600 dark:text-gray-300">
-                        Due: Dec 25
+                        Due: Sept 25
                       </p>
                     </div>
                     <div class="flex items-center gap-2">
@@ -223,7 +227,7 @@
 
         <div
           id="page-profile"
-          class="hidden p-6 bg-white rounded-3xl page-content dark:bg-gray-900"
+          class="hidden h-full p-6 bg-white page-content rounded-3xl dark:bg-gray-900"
         >
           <h1 class="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
             Profile & Income
@@ -286,112 +290,347 @@
 
         <div
           id="page-expenses"
-          class="hidden p-6 bg-white page-content dark:bg-gray-900"
+          class="hidden w-full h-full p-6 bg-white page-content dark:bg-gray-900"
         >
-          <h1 class="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
-            Expenses
-          </h1>
-          <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div class="p-6 text-white rounded-3xl bg-primary-red">
-              <h3 class="mb-2 font-semibold">Food</h3>
-              <p class="text-2xl font-bold">₱8,500.00</p>
-            </div>
+          <div class="grid gap-6 md:grid-cols-2">
             <div
-              class="p-6 text-gray-800 rounded-3xl bg-primary-yellow dark:bg-yellow-900 dark:text-gray-100"
+              class="p-6 bg-white border rounded-3xl dark:bg-gray-800 dark:border-gray-700"
             >
-              <h3 class="mb-2 font-semibold">Transport/Gas</h3>
-              <p class="text-2xl font-bold">₱3,200.00</p>
+              <h3
+                class="mb-4 text-lg font-semibold text-gray-800 dark:text-gray-100"
+              >
+                Monthly Expenses
+              </h3>
+              <div
+                id="monthly-expenses"
+                class="pr-2 space-y-3 overflow-y-auto max-h-64"
+              >
+                <div class="flex items-center justify-between">
+                  <p class="font-normal text-red-500">
+                    No monthly expenses saved yet
+                  </p>
+                  <button
+                    onclick="showExpenseForm()"
+                    class="px-4 py-3 text-sm text-white rounded-3xl bg-primary-blue hover:bg-blue-600"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+
+              <div id="expense-form" class="hidden mt-4 space-y-4">
+                <input
+                  type="text"
+                  id="expense-description"
+                  placeholder="Description"
+                  class="w-full p-3 border rounded-3xl dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                />
+                <input
+                  type="number"
+                  id="expense-amount"
+                  placeholder="Amount (₱)"
+                  class="w-full p-3 border rounded-3xl dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                />
+                <select
+                  id="expense-frequency"
+                  class="w-full p-3 border rounded-3xl dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                >
+                  <option value="">Select Frequency</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+                <div class="flex gap-2">
+                  <button
+                    onclick="saveExpense()"
+                    class="px-6 py-3 font-semibold text-white bg-primary-yellow rounded-3xl"
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    onclick="hideExpenseForm()"
+                    class="px-6 py-3 font-semibold text-white bg-primary-red rounded-3xl"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
             </div>
-            <div class="p-6 text-white rounded-3xl bg-primary-blue">
-              <h3 class="mb-2 font-semibold">Other Expenses</h3>
-              <p class="text-2xl font-bold">₱2,100.00</p>
+
+            <div
+              id="extra-expenses-section"
+              class="p-6 bg-white border rounded-3xl dark:bg-gray-800 dark:border-gray-700"
+            >
+              <h3
+                class="mb-4 text-lg font-semibold text-gray-800 dark:text-gray-100"
+              >
+                Extra Expenses
+              </h3>
+              <div
+                id="extra-expenses"
+                class="pr-2 space-y-3 overflow-y-auto max-h-64"
+              >
+                <div class="flex items-center justify-between">
+                  <p class="font-normal text-red-500">No extra expenses yet</p>
+                  <button
+                    onclick="showExtraExpenseForm()"
+                    class="px-4 py-3 text-sm text-white rounded-3xl bg-primary-blue hover:bg-blue-600"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+
+              <div id="extra-expense-form" class="hidden mt-4 space-y-4">
+                <input
+                  type="text"
+                  id="extra-expense-description"
+                  placeholder="Description"
+                  class="w-full p-3 border rounded-3xl dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                />
+                <input
+                  type="number"
+                  id="extra-expense-amount"
+                  placeholder="Amount (₱)"
+                  class="w-full p-3 border rounded-3xl dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                />
+                <select
+                  id="extra-expense-frequency"
+                  class="w-full p-3 border rounded-3xl dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                >
+                  <option value="">Select Frequency</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+                <div class="flex gap-2">
+                  <button
+                    onclick="saveExtraExpense()"
+                    class="px-6 py-3 font-semibold text-white bg-primary-yellow rounded-3xl"
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    onclick="hideExtraExpenseForm()"
+                    class="px-6 py-3 text-white bg-primary-red rounded-3xl"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <div
           id="page-bills"
-          class="hidden p-6 bg-white page-content dark:bg-gray-900"
+          class="hidden h-full p-6 bg-white page-content dark:bg-gray-900"
         >
-          <h1 class="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
-            Bills Management
-          </h1>
-          <p class="text-gray-600 dark:text-gray-300">
-            Add and manage your recurring bills here. Bills will appear on the
-            calendar.
-          </p>
-        </div>
-
-        <div
-          id="page-calendar"
-          class="hidden p-6 bg-white page-content dark:bg-gray-900"
-        >
-          <h1 class="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
-            Calendar
-          </h1>
-          <p class="text-gray-600 dark:text-gray-300">
-            Current month view with light green for past/current week and dark
-            green for future dates.
-          </p>
-        </div>
-
-        <div
-          id="page-charts"
-          class="hidden p-6 bg-white page-content dark:bg-gray-900"
-        >
-          <h1 class="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
-            Charts & Analytics
-          </h1>
-          <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <div class="p-6 rounded-3xl bg-red-50 dark:bg-red-900">
-              <h3 class="mb-4 font-semibold text-gray-800 dark:text-gray-100">
-                Income vs Expenses/Bills
+          <div>
+            <div
+              class="p-6 bg-white border rounded-3xl dark:bg-gray-800 dark:border-gray-700"
+            >
+              <h3
+                class="mb-4 text-lg font-semibold text-gray-800 dark:text-gray-100"
+              >
+                Monthly Bills
               </h3>
               <div
-                class="flex items-center justify-center h-48 bg-white rounded dark:bg-gray-800"
+                id="bills-list"
+                class="pr-2 space-y-3 overflow-y-auto max-h-64"
               >
-                Chart Placeholder
+                <div class="flex items-center justify-between">
+                  <p class="font-normal text-red-500">No bills saved yet</p>
+                  <button
+                    onclick="showBillForm()"
+                    class="px-4 py-3 text-sm text-white rounded-3xl bg-primary-blue hover:bg-blue-600"
+                  >
+                    Add
+                  </button>
+                </div>
               </div>
-            </div>
-            <div class="p-6 rounded-3xl bg-blue-50 dark:bg-blue-900">
-              <h3 class="mb-4 font-semibold text-gray-800 dark:text-gray-100">
-                Budget Performance
-              </h3>
-              <div
-                class="flex items-center justify-center h-48 bg-white rounded dark:bg-gray-800"
-              >
-                Chart Placeholder
+
+              <div id="bill-form" class="hidden mt-4 space-y-4">
+                <input
+                  type="text"
+                  id="bill-description"
+                  placeholder="Bill Description"
+                  class="w-full p-3 border rounded-3xl dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                />
+                <input
+                  type="number"
+                  id="bill-amount"
+                  placeholder="Amount (₱)"
+                  class="w-full p-3 border rounded-3xl dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                />
+                <input
+                  type="date"
+                  id="bill-due-date"
+                  class="w-full p-3 border rounded-3xl dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                />
+                <select
+                  id="bill-frequency"
+                  class="w-full p-3 border rounded-3xl dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                >
+                  <option value="">Select Frequency</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+                <div class="flex gap-2">
+                  <button
+                    onclick="saveBill()"
+                    class="px-6 py-3 text-white bg-primary-yellow rounded-3xl hover:bg-yellow-600"
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    onclick="hideBillForm()"
+                    class="px-6 py-3 text-gray-600 bg-primary-red rounded-3xl hover:bg-red-600 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         <div
-          id="page-savings"
-          class="hidden p-6 bg-white page-content dark:bg-gray-900"
+          id="page-calendar"
+          class="hidden h-full p-6 bg-white page-content dark:bg-gray-900"
         >
-          <h1 class="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
-            Savings Analysis
-          </h1>
-          <p class="text-gray-600 dark:text-gray-300">
-            Focus and analyze each month's savings performance.
-          </p>
+          <div class="p-6 bg-white border rounded-3xl">
+            <div class="flex items-center justify-between mb-6">
+              <button
+                onclick="previousMonth()"
+                class="p-2 text-gray-600 rounded-lg hover:bg-gray-100"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 19l-7-7 7-7"
+                  ></path>
+                </svg>
+              </button>
+              <h2
+                id="calendar-month-year"
+                class="text-xl font-semibold text-gray-800"
+              ></h2>
+              <button
+                onclick="nextMonth()"
+                class="p-2 text-gray-600 rounded-lg hover:bg-gray-100"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+
+            <div class="overflow-hidden border rounded-lg">
+              <div class="grid grid-cols-7 bg-gray-50">
+                <div
+                  class="p-4 font-semibold text-center text-gray-700 border-r border-gray-200"
+                >
+                  Sunday
+                </div>
+                <div
+                  class="p-4 font-semibold text-center text-gray-700 border-r border-gray-200"
+                >
+                  Monday
+                </div>
+                <div
+                  class="p-4 font-semibold text-center text-gray-700 border-r border-gray-200"
+                >
+                  Tuesday
+                </div>
+                <div
+                  class="p-4 font-semibold text-center text-gray-700 border-r border-gray-200"
+                >
+                  Wednesday
+                </div>
+                <div
+                  class="p-4 font-semibold text-center text-gray-700 border-r border-gray-200"
+                >
+                  Thursday
+                </div>
+                <div
+                  class="p-4 font-semibold text-center text-gray-700 border-r border-gray-200"
+                >
+                  Friday
+                </div>
+                <div class="p-4 font-semibold text-center text-gray-700">
+                  Saturday
+                </div>
+              </div>
+              <div id="calendar-grid" class="grid grid-cols-7 bg-white"></div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="page-charts"
+          class="hidden h-full p-6 bg-white page-content dark:bg-gray-900"
+        >
+          <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <div class="p-6 rounded-3xl bg-red-50 dark:bg-red-900">
+              <h3 class="mb-4 font-semibold text-gray-800 dark:text-gray-100">
+                Budget this Month
+              </h3>
+              <div
+                class="flex items-center justify-center h-48 bg-white rounded dark:bg-gray-800"
+              >
+                <canvas id="expenseChart"></canvas>
+              </div>
+            </div>
+            <div class="p-6 rounded-3xl bg-blue-50 dark:bg-blue-900">
+              <h3 class="mb-4 font-semibold text-gray-800 dark:text-gray-100">
+                Future Budget Prediction
+              </h3>
+              <div
+                class="flex items-center justify-center h-48 bg-white rounded dark:bg-gray-800"
+              >
+                <canvas id="incomeChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <div class="p-6 rounded-3xl bg-green-50 dark:bg-green-900">
+              <h3 class="mb-4 font-semibold text-gray-800 dark:text-gray-100">
+                Selected Month's Performance
+              </h3>
+              <div
+                class="flex items-center justify-center h-64 bg-white rounded dark:bg-gray-800"
+              >
+                <canvas id="futureBudgetChart"></canvas>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div
           id="page-settings"
-          class="hidden p-6 bg-white page-content dark:bg-gray-900"
+          class="hidden h-full p-6 bg-white dark:bg-gray-900"
         >
           <h1 class="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
             Settings
           </h1>
           <div class="max-w-md space-y-4">
-            <div
-              class="flex items-center justify-between p-4 rounded-3xl bg-gray-50 dark:bg-gray-800"
-            >
-              <span class="text-gray-800 dark:text-gray-100">Dark Mode</span>
-              <input type="checkbox" class="toggle" />
-            </div>
             <button
               class="w-full p-3 text-gray-800 rounded-3xl bg-primary-yellow hover:bg-yellow-500 dark:text-gray-100 dark:bg-yellow-900 dark:hover:bg-yellow-800"
             >
